@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn React.js with Vite - Git & Deployment Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #61dafb;
+            --secondary-color: #20232a;
+            --accent-color: #282c34;
+            --light-color: #ffffff;
+            --dark-color: #121212;
+            --git-color: #f1502f;
+            --netlify-color: #00ad9f;
+            --text-color: #333;
+            --text-light: #f8f9fa;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            color: var(--text-color);
+            background-color: var(--light-color);
+            line-height: 1.6;
+        }
+
+        /* Responsive Navbar */
+        .navbar {
+            background-color: var(--secondary-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: var(--light-color);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        .highlight {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .highlight-git {
+            color: var(--git-color);
+        }
+
+        .highlight-netlify {
+            color: var(--netlify-color);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            background-color: #fff;
+            box-shadow: var(--shadow);
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2 i {
+            color: var(--primary-color);
+        }
+
+        .section h2 .git-icon {
+            color: var(--git-color);
+        }
+
+        .section h2 .netlify-icon {
+            color: var(--netlify-color);
+        }
+
+        .section-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        /* Code Styling */
+        .code-block {
+            background-color: var(--dark-color);
+            color: var(--text-light);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .code-block-git {
+            border-left-color: var(--git-color);
+        }
+
+        .code-block-netlify {
+            border-left-color: var(--netlify-color);
+        }
+
+        .code-block code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .code-comment {
+            color: #6a9955;
+        }
+
+        .code-keyword {
+            color: #569cd6;
+        }
+
+        .code-function {
+            color: #dcdcaa;
+        }
+
+        .code-string {
+            color: #ce9178;
+        }
+
+        .code-variable {
+            color: #9cdcfe;
+        }
+
+        /* Cards */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .card-git {
+            border-top-color: var(--git-color);
+        }
+
+        .card-netlify {
+            border-top-color: var(--netlify-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 i {
+            color: var(--primary-color);
+        }
+
+        /* Steps List */
+        .steps-list {
+            counter-reset: step-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .steps-list li {
+            counter-increment: step-counter;
+            margin-bottom: 2rem;
+            padding-left: 3.5rem;
+            position: relative;
+        }
+
+        .steps-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--primary-color);
+            color: white;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .steps-list-git li::before {
+            background-color: var(--git-color);
+        }
+
+        .steps-list-netlify li::before {
+            background-color: var(--netlify-color);
+        }
+
+        /* Process Visualization */
+        .process-visual {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem 0;
+            position: relative;
+            flex-wrap: wrap;
+        }
+
+        .process-step {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            flex: 1;
+            margin: 0 0.5rem;
+            min-width: 150px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .process-step-git {
+            background-color: var(--git-color);
+        }
+
+        .process-step-netlify {
+            background-color: var(--netlify-color);
+        }
+
+        .process-arrow {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+        }
+
+        .process-arrow-git {
+            color: var(--git-color);
+        }
+
+        .process-arrow-netlify {
+            color: var(--netlify-color);
+        }
+
+        /* Warning/Note Box */
+        .note-box {
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+        }
+
+        .note-info {
+            background-color: #e7f3ff;
+            border-left-color: #2196f3;
+        }
+
+        .note-warning {
+            background-color: #fff8e1;
+            border-left-color: #ff9800;
+        }
+
+        .note-success {
+            background-color: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        /* Deployment Platforms */
+        .platform-cards {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .platform-card {
+            flex: 1;
+            min-width: 200px;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .platform-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .platform-card.netlify-card {
+            background-color: #f0f9f8;
+            border-top: 4px solid var(--netlify-color);
+        }
+
+        .platform-card.vercel-card {
+            background-color: #f5f5f5;
+            border-top: 4px solid #000;
+        }
+
+        .platform-card.github-card {
+            background-color: #f6f8fa;
+            border-top: 4px solid #333;
+        }
+
+        .platform-card h4 {
+            margin: 1rem 0 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                flex-direction: column;
+                background-color: var(--secondary-color);
+                width: 100%;
+                text-align: center;
+                padding: 2rem 0;
+                transition: var(--transition);
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.8rem;
+            }
+
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .process-visual {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .process-step {
+                margin: 0.5rem 0;
+            }
+
+            .process-arrow {
+                transform: rotate(90deg);
+                margin: 0.5rem 0;
+                text-align: center;
+            }
+
+            .platform-cards {
+                flex-direction: column;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+            
+            .card-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .process-step {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Responsive Navbar -->
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <i class="fab fa-react"></i>
+            <span>React with Vite</span>
+        </a>
+        
+        <ul class="nav-links">
+            <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#what-is-react"><i class="fab fa-react"></i> React</a></li>
+            <li><a href="#vite"><i class="fas fa-bolt"></i> Vite</a></li>
+            <li><a href="#installation"><i class="fas fa-download"></i> Installation</a></li>
+            <li><a href="#usage"><i class="fas fa-code"></i> Usage</a></li>
+            <li><a href="#git"><i class="fab fa-git-alt"></i> Git & GitHub</a></li>
+            <li><a href="#deployment"><i class="fas fa-rocket"></i> Deployment</a></li>
+            <li><a href="#resources"><i class="fas fa-book"></i> Resources</a></li>
+        </ul>
+        
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>Learn <span class="highlight">React.js</span> with <span class="highlight">Vite</span></h1>
+        <p>Complete guide from installation to deployment. Learn how to build, version control with <span class="highlight-git">Git</span>, and deploy your React apps on <span class="highlight-netlify">Netlify</span>.</p>
+        <a href="#installation" class="btn" style="background-color: var(--primary-color); color: var(--secondary-color); padding: 0.8rem 1.5rem; border-radius: var(--border-radius); text-decoration: none; font-weight: bold; display: inline-block; margin-top: 1rem;">Get Started</a>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- What is React Section -->
+        <section class="section" id="what-is-react">
+            <h2><i class="fab fa-react"></i> What is React.js?</h2>
+            <div class="section-content">
+                <p>React is a popular JavaScript library for building user interfaces, developed by Facebook. It allows developers to create reusable UI components and manage application state efficiently.</p>
+                
+                <div class="card-container">
+                    <div class="card">
+                        <h3><i class="fas fa-cube"></i> Component-Based</h3>
+                        <p>React applications are built using components - reusable, self-contained pieces of code that manage their own state and rendering.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-sync-alt"></i> Declarative</h3>
+                        <p>React uses a declarative paradigm that makes it easier to reason about your application and helps create interactive UIs.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-bolt"></i> Virtual DOM</h3>
+                        <p>React uses a virtual DOM to optimize rendering, only updating the parts of the DOM that have actually changed.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vite Section -->
+        <section class="section" id="vite">
+            <h2><i class="fas fa-bolt"></i> What is Vite?</h2>
+            <div class="section-content">
+                <p>Vite (French word for "fast", pronounced /vit/) is a next-generation frontend build tool that significantly improves the development experience for modern web projects.</p>
+                
+                <div class="card-container">
+                    <div class="card">
+                        <h3><i class="fas fa-tachometer-alt"></i> Lightning Fast</h3>
+                        <p>Vite provides near-instant server start and hot module replacement (HMR) that stays fast regardless of app size.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-box-open"></i> Optimized Build</h3>
+                        <p>Vite uses Rollup for production builds, pre-configured to output highly optimized static assets.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-cogs"></i> Rich Features</h3>
+                        <p>Out-of-the-box support for TypeScript, JSX, CSS, and more. Highly extensible via its plugin API.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Installation Section -->
+        <section class="section" id="installation">
+            <h2><i class="fas fa-download"></i> Installation & Setup</h2>
+            <div class="section-content">
+                <p>Setting up a React project with Vite is straightforward. Follow these steps to get started:</p>
+                
+                <h3 style="margin-top: 2rem;">Step 1: Create a new Vite project</h3>
+                <div class="code-block">
+                    <code>
+                        <span class="code-comment"># Using npm</span><br>
+                        npm create vite@latest my-react-app -- --template react<br><br>
+                        
+                        <span class="code-comment"># Using yarn</span><br>
+                        yarn create vite my-react-app --template react<br><br>
+                        
+                        <span class="code-comment"># Using pnpm</span><br>
+                        pnpm create vite my-react-app --template react
+                    </code>
+                </div>
+                
+                <h3>Step 4: Start the development server</h3>
+                <div class="code-block">
+                    <code>
+                        <span class="code-comment"># Using npm</span><br>
+                        npm run dev<br><br>
+                        
+                        <span class="code-comment"># Using yarn</span><br>
+                        yarn dev<br><br>
+                        
+                        <span class="code-comment"># Using pnpm</span><br>
+                        pnpm dev
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Usage Section -->
+        <section class="section" id="usage">
+            <h2><i class="fas fa-code"></i> React Usage & Concepts</h2>
+            <div class="section-content">
+                <p>Once your React + Vite project is set up, you can start building components and applications. Here are key concepts to understand:</p>
+                
+                <div class="card-container">
+                    <div class="card">
+                        <h3><i class="fas fa-layer-group"></i> Components</h3>
+                        <p>React apps are built from components - reusable pieces of UI. Components can be functional or class-based.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-database"></i> State Management</h3>
+                        <p>React components can have state that determines their behavior and rendering. Use useState hook for functional components.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-exchange-alt"></i> Props</h3>
+                        <p>Props (properties) allow data to be passed from parent to child components, making components reusable and configurable.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Git & GitHub Section -->
+        <section class="section" id="git">
+            <h2><i class="fab fa-git-alt git-icon"></i> Git Version Control & GitHub</h2>
+            <div class="section-content">
+                <p>Version control is essential for tracking changes, collaborating with others, and deploying your applications. Git is the most popular version control system, and GitHub is a platform for hosting Git repositories.</p>
+                
+                <div class="note-box note-info">
+                    <h4><i class="fas fa-info-circle"></i> Why Use Git?</h4>
+                    <p>Git helps you track changes to your code, collaborate with other developers, and maintain different versions of your project. It's essential for professional development workflows.</p>
+                </div>
+                
+                <h3>Complete Git & GitHub Setup Process</h3>
+                
+                <div class="process-visual">
+                    <div class="process-step process-step-git">1. Initialize Git</div>
+                    <div class="process-arrow process-arrow-git"><i class="fas fa-arrow-right"></i></div>
+                    <div class="process-step process-step-git">2. Create .gitignore</div>
+                    <div class="process-arrow process-arrow-git"><i class="fas fa-arrow-right"></i></div>
+                    <div class="process-step process-step-git">3. Stage & Commit</div>
+                    <div class="process-arrow process-arrow-git"><i class="fas fa-arrow-right"></i></div>
+                    <div class="process-step process-step-git">4. Connect to GitHub</div>
+                    <div class="process-arrow process-arrow-git"><i class="fas fa-arrow-right"></i></div>
+                    <div class="process-step process-step-git">5. Push to Remote</div>
+                </div>
+                
+                <h3>Step-by-Step Guide</h3>
+                
+                <ol class="steps-list steps-list-git">
+                    <li>
+                        <h4>Install Git (if not already installed)</h4>
+                        <p>Download and install Git from <a href="https://git-scm.com/" target="_blank" style="color: var(--git-color);">git-scm.com</a>. Verify installation with:</p>
+                        <div class="code-block code-block-git">
+                            <code>
+                                git --version
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Configure Git with your credentials</h4>
+                        <p>Set up your name and email for commits:</p>
+                        <div class="code-block code-block-git">
+                            <code>
+                                <span class="code-comment"># Set your username</span><br>
+                                git config --global user.name "Your Name"<br><br>
+                                
+                                <span class="code-comment"># Set your email</span><br>
+                                git config --global user.email "youremail@example.com"
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Initialize Git in your React project</h4>
+                        <p>Navigate to your project folder and initialize Git:</p>
+                        <div class="code-block code-block-git">
+                            <code>
+                                <span class="code-comment"># Navigate to your project directory</span><br>
+                                cd my-react-app<br><br>
+                                
+                                <span class="code-comment"># Initialize a new Git repository</span><br>
+                                git init
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Create a .gitignore file</h4>
+                        <p>Create a file named <code>.gitignore</code> in your project root to exclude unnecessary files:</p>
+                        <div class="code-block code-block-git">
+                            <code>
+                                <span class="code-comment"># Dependency directories</span><br>
+                                node_modules/<br>
+                                .pnpm-store/<br><br>
+                                
+                                <span class="code-comment"># Build output</span><br>
+                                dist/<br>
+                                build/<br><br>
+                                
+                                <span class="code-comment"># Environment variables</span><br>
+                                .env<br>
+                                .env.local<br>
+                                .env.development.local<br>
+                                .env.test.local<br>
+                                .env.production.local<br><br>
+                                
+                                <span class="code-comment"># Logs</span><br>
+                                npm-debug.log*<br>
+                                yarn-debug.log*<br>
+                                yarn-error.log*<br><br>
+                                
+                                <span class="code-comment"># Editor directories and files</span><br>
+                                .vscode/<br>
+                                .idea/<br>
+                                *.suo<br>
+                                *.ntvs*<br>
+                                *.njsproj<br>
+                                *.sln<br>
+                                *.sw?
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Stage and commit your files</h4>
+                        <p>Add your files to the staging area and create your first commit:</p>
+                        <div class="code-block code-block-git">
+                            <code>
+                                <span class="code-comment"># Add all files to staging area</span><br>
+                                git add .<br><br>
+                                
+                                <span class="code-comment"># Or add specific files</span><br>
+                                git add index.html src/ package.json<br><br>
+                                
+                                <span class="code-comment"># Commit with a descriptive message</span><br>
+                                git commit -m "Initial commit: React app with Vite"
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Create a GitHub repository</h4>
+                        <p>Go to <a href="https://github.com" target="_blank" style="color: var(--git-color);">GitHub.com</a>, log in, and create a new repository. Don't initialize it with README, .gitignore, or license if you've already done these locally.</p>
+                    </li>
+                    
+                    <li>
+                        <h4>Connect local repository to GitHub</h4>
+                        <p>Link your local Git repository to the remote GitHub repository:</p>
+                        <div class="code-block code-block-git">
+                            <code>
+                                <span class="code-comment"># Add remote repository (replace with your URL)</span><br>
+                                git remote add origin https://github.com/your-username/your-repo-name.git<br><br>
+                                
+                                <span class="code-comment"># Verify the remote URL</span><br>
+                                git remote -v
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Push your code to GitHub</h4>
+                        <p>Upload your local commits to the GitHub repository:</p>
+                        <div class="code-block code-block-git">
+                            <code>
+                                <span class="code-comment"># Push to the main branch</span><br>
+                                git push -u origin main<br><br>
+                                
+                                <span class="code-comment"># If your default branch is master, use:</span><br>
+                                git push -u origin master
+                            </code>
+                        </div>
+                        <div class="note-box note-success">
+                            <h4><i class="fas fa-check-circle"></i> Success!</h4>
+                            <p>Your React project is now on GitHub! You can visit your repository URL to see the code.</p>
+                        </div>
+                    </li>
+                </ol>
+                
+                <h3>Common Git Commands Cheat Sheet</h3>
+                <div class="card-container">
+                    <div class="card card-git">
+                        <h3><i class="fas fa-code-branch"></i> Branch Management</h3>
+                        <div class="code-block code-block-git" style="margin: 1rem 0; padding: 1rem;">
+                            <code style="font-size: 0.9rem;">
+                                git branch              <span class="code-comment"># List branches</span><br>
+                                git branch new-feature <span class="code-comment"># Create branch</span><br>
+                                git checkout branch    <span class="code-comment"># Switch branch</span><br>
+                                git merge branch       <span class="code-comment"># Merge branch</span>
+                            </code>
+                        </div>
+                    </div>
+                    
+                    <div class="card card-git">
+                        <h3><i class="fas fa-history"></i> History & Changes</h3>
+                        <div class="code-block code-block-git" style="margin: 1rem 0; padding: 1rem;">
+                            <code style="font-size: 0.9rem;">
+                                git status              <span class="code-comment"># Check status</span><br>
+                                git log                <span class="code-comment"># View commit history</span><br>
+                                git diff               <span class="code-comment"># See changes</span><br>
+                                git show               <span class="code-comment"># Show last commit</span>
+                            </code>
+                        </div>
+                    </div>
+                    
+                    <div class="card card-git">
+                        <h3><i class="fas fa-undo"></i> Undo & Recovery</h3>
+                        <div class="code-block code-block-git" style="margin: 1rem 0; padding: 1rem;">
+                            <code style="font-size: 0.9rem;">
+                                git restore file       <span class="code-comment"># Discard changes</span><br>
+                                git reset              <span class="code-comment"># Unstage files</span><br>
+                                git revert             <span class="code-comment"># Revert commit</span><br>
+                                git stash              <span class="code-comment"># Temporarily stash changes</span>
+                            </code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deployment Section -->
+        <section class="section" id="deployment">
+            <h2><i class="fas fa-rocket netlify-icon"></i> Deploy React App to Netlify</h2>
+            <div class="section-content">
+                <p>Netlify is a popular platform for deploying static websites and web applications. It offers continuous deployment from Git, free SSL, CDN, and more. Here's how to deploy your React + Vite app to Netlify.</p>
+                
+                <div class="note-box note-info">
+                    <h4><i class="fas fa-info-circle"></i> Why Netlify?</h4>
+                    <p>Netlify provides a simple, fast, and reliable way to deploy web projects with automatic builds from Git, free hosting for personal projects, and powerful features like form handling, serverless functions, and instant rollbacks.</p>
+                </div>
+                
+                <h3>Deployment Options</h3>
+                <div class="platform-cards">
+                    <div class="platform-card netlify-card">
+                        <i class="fab fa-netlify" style="font-size: 3rem; color: var(--netlify-color);"></i>
+                        <h4>Netlify</h4>
+                        <p>Easiest deployment with drag & drop, Git integration, and free tier</p>
+                    </div>
+                    
+                    <div class="platform-card vercel-card">
+                        <i class="fas fa-cloud" style="font-size: 3rem; color: #000;"></i>
+                        <h4>Vercel</h4>
+                        <p>Created by Next.js team, optimized for React, excellent performance</p>
+                    </div>
+                    
+                    <div class="platform-card github-card">
+                        <i class="fab fa-github" style="font-size: 3rem; color: #333;"></i>
+                        <h4>GitHub Pages</h4>
+                        <p>Free hosting for static sites directly from GitHub repositories</p>
+                    </div>
+                </div>
+                
+                <h3>Netlify Deployment Process</h3>
+                
+                <div class="process-visual">
+                    <div class="process-step process-step-netlify">1. Build Project</div>
+                    <div class="process-arrow process-arrow-netlify"><i class="fas fa-arrow-right"></i></div>
+                    <div class="process-step process-step-netlify">2. Create Netlify Account</div>
+                    <div class="process-arrow process-arrow-netlify"><i class="fas fa-arrow-right"></i></div>
+                    <div class="process-step process-step-netlify">3. Connect Git Repo</div>
+                    <div class="process-arrow process-arrow-netlify"><i class="fas fa-arrow-right"></i></div>
+                    <div class="process-step process-step-netlify">4. Configure Build Settings</div>
+                    <div class="process-arrow process-arrow-netlify"><i class="fas fa-arrow-right"></i></div>
+                    <div class="process-step process-step-netlify">5. Deploy!</div>
+                </div>
+                
+                <h3>Method 1: Deploy via Netlify CLI (Command Line)</h3>
+                
+                <ol class="steps-list steps-list-netlify">
+                    <li>
+                        <h4>Build your React project for production</h4>
+                        <p>First, create an optimized production build of your app:</p>
+                        <div class="code-block code-block-netlify">
+                            <code>
+                                <span class="code-comment"># Build the project (creates a 'dist' folder)</span><br>
+                                npm run build<br><br>
+                                
+                                <span class="code-comment"># Preview the production build locally</span><br>
+                                npm run preview
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Install Netlify CLI globally</h4>
+                        <p>Install the Netlify command line interface:</p>
+                        <div class="code-block code-block-netlify">
+                            <code>
+                                <span class="code-comment"># Using npm</span><br>
+                                npm install -g netlify-cli<br><br>
+                                
+                                <span class="code-comment"># Using yarn</span><br>
+                                yarn global add netlify-cli
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Login to Netlify from CLI</h4>
+                        <p>Authenticate with your Netlify account:</p>
+                        <div class="code-block code-block-netlify">
+                            <code>
+                                <span class="code-comment"># Login to Netlify</span><br>
+                                netlify login
+                            </code>
+                        </div>
+                        <p>This will open a browser window for authentication. Follow the prompts to authorize.</p>
+                    </li>
+                    
+                    <li>
+                        <h4>Initialize and deploy your site</h4>
+                        <p>Deploy your built application to Netlify:</p>
+                        <div class="code-block code-block-netlify">
+                            <code>
+                                <span class="code-comment"># Initialize a new Netlify site</span><br>
+                                netlify init<br><br>
+                                
+                                <span class="code-comment"># Deploy to Netlify (from the dist folder)</span><br>
+                                netlify deploy --prod --dir=dist
+                            </code>
+                        </div>
+                        <p>Follow the prompts to create a new site or link to an existing one.</p>
+                    </li>
+                </ol>
+                
+                <h3>Method 2: Deploy via Netlify Web UI (Recommended for Beginners)</h3>
+                
+                <ol class="steps-list steps-list-netlify">
+                    <li>
+                        <h4>Push your code to GitHub</h4>
+                        <p>Ensure your React project is on GitHub (as shown in the Git section).</p>
+                    </li>
+                    
+                    <li>
+                        <h4>Create a Netlify account</h4>
+                        <p>Go to <a href="https://netlify.com" target="_blank" style="color: var(--netlify-color);">netlify.com</a> and sign up (you can use your GitHub account for easy login).</p>
+                    </li>
+                    
+                    <li>
+                        <h4>Add a new site from Git</h4>
+                        <p>Click "Add new site" → "Import an existing project" → Connect to GitHub.</p>
+                    </li>
+                    
+                    <li>
+                        <h4>Select your repository</h4>
+                        <p>Choose your React project repository from the list.</p>
+                    </li>
+                    
+                    <li>
+                        <h4>Configure build settings</h4>
+                        <p>Netlify will auto-detect Vite projects, but verify these settings:</p>
+                        <div class="code-block code-block-netlify">
+                            <code>
+                                <span class="code-comment"># Build command</span><br>
+                                npm run build<br><br>
+                                
+                                <span class="code-comment"># Publish directory</span><br>
+                                dist<br><br>
+                                
+                                <span class="code-comment"># Environment variables (if needed)</span><br>
+                                <span class="code-variable">VITE_API_URL</span>=https://api.example.com
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Deploy site</h4>
+                        <p>Click "Deploy site". Netlify will build and deploy your application.</p>
+                        <div class="note-box note-success">
+                            <h4><i class="fas fa-check-circle"></i> Deployment Complete!</h4>
+                            <p>Your React app is now live! Netlify will provide a URL (like <code>https://your-site-name.netlify.app</code>).</p>
+                        </div>
+                    </li>
+                </ol>
+                
+                <h3>Method 3: Drag & Drop Deployment (Simplest)</h3>
+                
+                <ol class="steps-list steps-list-netlify">
+                    <li>
+                        <h4>Build your React project</h4>
+                        <div class="code-block code-block-netlify">
+                            <code>
+                                npm run build
+                            </code>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <h4>Locate the dist folder</h4>
+                        <p>After building, you'll have a <code>dist</code> folder in your project.</p>
+                    </li>
+                    
+                    <li>
+                        <h4>Drag & drop to Netlify</h4>
+                        <p>Go to Netlify Dashboard → Sites → Drag and drop your <code>dist</code> folder.</p>
+                        <p>Netlify will upload and deploy your site instantly!</p>
+                    </li>
+                </ol>
+                
+                <div class="note-box note-warning">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Important Configuration for Vite Projects</h4>
+                    <p>For single-page applications (SPAs) like React apps, you need to configure redirects for proper routing:</p>
+                    <p>Create a file named <code>_redirects</code> in your <code>public</code> folder with this content:</p>
+                    <div class="code-block code-block-netlify" style="margin-top: 1rem;">
+                        <code>
+                            <span class="code-comment"># Single Page App Routing</span><br>
+                            /*    /index.html   200
+                        </code>
+                    </div>
+                    <p>Or create a <code>netlify.toml</code> file in your project root:</p>
+                    <div class="code-block code-block-netlify" style="margin-top: 1rem;">
+                        <code>
+                            [[redirects]]<br>
+                            from = "/*"<br>
+                            to = "/index.html"<br>
+                            status = 200
+                        </code>
+                    </div>
+                </div>
+                
+                <h3>Post-Deployment: Custom Domain & Environment Variables</h3>
+                <div class="card-container">
+                    <div class="card card-netlify">
+                        <h3><i class="fas fa-globe"></i> Custom Domain</h3>
+                        <p>Go to Site Settings → Domain Management → Add custom domain. Follow Netlify's instructions to configure your DNS.</p>
+                    </div>
+                    
+                    <div class="card card-netlify">
+                        <h3><i class="fas fa-key"></i> Environment Variables</h3>
+                        <p>In Site Settings → Environment Variables, add variables used in your app (prefixed with VITE_ for Vite).</p>
+                    </div>
+                    
+                    <div class="card card-netlify">
+                        <h3><i class="fas fa-sync-alt"></i> Continuous Deployment</h3>
+                        <p>Every push to your connected Git branch triggers an automatic rebuild and deployment.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Section -->
+        <section class="section" id="resources">
+            <h2><i class="fas fa-book"></i> Learning Resources</h2>
+            <div class="section-content">
+                <p>Here are some valuable resources to continue your React learning journey:</p>
+                
+                <div class="card-container">
+                    <div class="card">
+                        <h3><i class="fas fa-graduation-cap"></i> Official Documentation</h3>
+                        <p>The React and Vite official docs are the best place to start and reference.</p>
+                        <ul style="margin-top: 1rem; padding-left: 1rem;">
+                            <li><a href="https://reactjs.org/docs/getting-started.html" target="_blank" style="color: var(--primary-color);">React Documentation</a></li>
+                            <li><a href="https://vitejs.dev/guide/" target="_blank" style="color: var(--primary-color);">Vite Documentation</a></li>
+                            <li><a href="https://docs.netlify.com/" target="_blank" style="color: var(--netlify-color);">Netlify Docs</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fab fa-github"></i> Git & GitHub Resources</h3>
+                        <p>Master version control with these resources:</p>
+                        <ul style="margin-top: 1rem; padding-left: 1rem;">
+                            <li><a href="https://git-scm.com/doc" target="_blank" style="color: var(--git-color);">Git Official Documentation</a></li>
+                            <li><a href="https://docs.github.com/en" target="_blank" style="color: var(--git-color);">GitHub Documentation</a></li>
+                            <li><a href="https://www.freecodecamp.org/news/git-and-github-crash-course/" target="_blank" style="color: var(--git-color);">Git & GitHub Crash Course</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-laptop-code"></i> Practice Projects</h3>
+                        <p>Build these projects to practice your React skills:</p>
+                        <ul style="margin-top: 1rem; padding-left: 1rem;">
+                            <li>Todo List Application</li>
+                            <li>Weather App with API</li>
+                            <li>E-commerce Product Page</li>
+                            <li>Chat Interface</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">React with Vite - Complete Guide</h2>
+            <p>From installation to deployment - a comprehensive guide for learning and teaching React.js with Vite.</p>
+            
+            <ul class="footer-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#what-is-react">React</a></li>
+                <li><a href="#vite">Vite</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#usage">Usage</a></li>
+                <li><a href="#git">Git & GitHub</a></li>
+                <li><a href="#deployment">Deployment</a></li>
+                <li><a href="#resources">Resources</a></li>
+            </ul>
+            
+            <div class="copyright">
+                <p>Made with <i class="fas fa-heart" style="color: #e74c3c;"></i> for the React learning community | &copy; 2023 React with Vite Guide</p>
+                <p style="margin-top: 0.5rem; font-size: 0.9rem;">Includes Git version control and Netlify deployment tutorials</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile navbar toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // Animate hamburger to X
+            const spans = hamburger.querySelectorAll('span');
+            if (navLinks.classList.contains('active')) {
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+            } else {
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            }
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                
+                // Reset hamburger icon
+                const spans = hamburger.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            console.log('React with Vite learning website loaded successfully!');
+        });
+    </script>
+</body>
+</html>
